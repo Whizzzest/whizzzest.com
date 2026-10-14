@@ -1,0 +1,137 @@
+{
+  "_note": "社媒聚合页（/social/ 与 /en/social/）渠道表 —— 单一事实源：本表只写双语文案与分组，href/qr/qrList 一律按 icon 从两个 locale 的 src/data[/en]/site.json → footer.socials 并集解析（构建期，见 build.js resolveSocialChannels 与 docs/社媒聚合页方案.md）。加平台只改本表 + 对应 locale 的 site.json socials；中英两页都列全平台，分组顺序按当前语言母语平台优先。",
+  "groups": [
+    { "key": "cn", "zh": "国内平台", "en": "China platforms" },
+    { "key": "global", "zh": "海外平台", "en": "Global platforms" }
+  ],
+  "channelOrder": {
+    "zh": ["cn", "global"],
+    "en": ["global", "cn"]
+  },
+  "channels": [
+    {
+      "icon": "wechat-official",
+      "group": "cn",
+      "zh": {
+        "name": "微信公众号",
+        "desc": "「云上万载 · 焰遇乡旅」——活动预告、烟花攻略与深度长文。",
+        "cap": "微信公众号 · 云上万载-焰遇乡旅"
+      },
+      "en": {
+        "name": "WeChat Official Account",
+        "desc": "Event previews, fireworks guides and in-depth stories (Chinese).",
+        "cap": "WeChat official account · 云上万载-焰遇乡旅"
+      }
+    },
+    {
+      "icon": "wechat-channel",
+      "group": "cn",
+      "zh": {
+        "name": "微信视频号",
+        "desc": "每周六「焰火之吻」与古城日常的短视频。",
+        "cap": "微信视频号 · 焰境·万载"
+      },
+      "en": {
+        "name": "WeChat Channels",
+        "desc": "Short video of the weekly fireworks show and old-town life (Chinese).",
+        "cap": "WeChat Channels · 焰境·万载"
+      }
+    },
+    {
+      "icon": "bilibili",
+      "group": "cn",
+      "zh": {
+        "name": "哔哩哔哩",
+        "desc": "烟花秀实拍、非遗纪录与长视频。"
+      },
+      "en": {
+        "name": "Bilibili",
+        "desc": "Fireworks shows, heritage documentaries and long-form video (Chinese)."
+      }
+    },
+    {
+      "icon": "douyin",
+      "group": "cn",
+      "zh": {
+        "name": "抖音",
+        "desc": "焰火现场直拍与花炮手艺人的日常。"
+      },
+      "en": {
+        "name": "Douyin",
+        "desc": "Live clips from the Saturday show and the firecracker makers (Chinese)."
+      }
+    },
+    {
+      "icon": "xiaohongshu",
+      "group": "cn",
+      "zh": {
+        "name": "小红书",
+        "desc": "打卡攻略、拍照机位与万载探店笔记。"
+      },
+      "en": {
+        "name": "RedNote (Xiaohongshu)",
+        "desc": "Visit guides, photo spots and food notes (Chinese)."
+      }
+    },
+    {
+      "icon": "x",
+      "group": "global",
+      "zh": {
+        "name": "X（Twitter）",
+        "desc": "英文动态与项目幕后记录。"
+      },
+      "en": {
+        "name": "X (Twitter)",
+        "desc": "English updates and behind-the-scenes notes."
+      }
+    },
+    {
+      "icon": "youtube",
+      "group": "global",
+      "zh": {
+        "name": "YouTube",
+        "desc": "长视频与迷你纪录片。"
+      },
+      "en": {
+        "name": "YouTube",
+        "desc": "Long-form video and mini documentaries."
+      }
+    },
+    {
+      "icon": "instagram",
+      "group": "global",
+      "zh": {
+        "name": "Instagram",
+        "desc": "照片墙：焰火、古城与团队日常。"
+      },
+      "en": {
+        "name": "Instagram",
+        "desc": "Photos: fireworks, the old town and our team."
+      }
+    },
+    {
+      "icon": "facebook",
+      "group": "global",
+      "zh": {
+        "name": "Facebook",
+        "desc": "英文站动态与活动花絮。"
+      },
+      "en": {
+        "name": "Facebook",
+        "desc": "Updates and event highlights."
+      }
+    },
+    {
+      "icon": "discord",
+      "group": "global",
+      "zh": {
+        "name": "Discord",
+        "desc": "社区交流与开发进展。"
+      },
+      "en": {
+        "name": "Discord",
+        "desc": "Community chat and build-in-public updates."
+      }
+    }
+  ]
+}

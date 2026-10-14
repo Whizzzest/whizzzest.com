@@ -865,6 +865,142 @@ a.feature-card:hover {
   .footer-social { margin-left: 0; }
 }
 
+/* 社媒聚合页入口（docs/社媒聚合页方案.md §5）：图标行最右端的「查看更多 ›／See more ›」。
+   刻意放在 .footer-social 之外（同级兄弟）——若塞进图标行内会成为 a:last-child，
+   抢走上面那条给小红书字标放大一档的规则。 */
+.footer-social-more {
+  align-self: center;
+  padding: 5px 14px;
+  border: 1px solid var(--c-hairline);
+  border-radius: 999px;
+  background: var(--c-bg);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-text-2);
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.footer-social-more:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+/* ---------------- 社媒聚合页（/social/ · /en/social/，docs/社媒聚合页方案.md §3） ---------------- */
+
+.social-group + .social-group {
+  margin-top: 56px;
+}
+
+.social-group-title {
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--c-text-3);
+  text-align: center;
+}
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* 卡片对 <a> 与 <button> 同构：重置浏览器默认按钮外观，视觉一致 */
+.social-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 22px 26px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--c-bg-alt);
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+
+.social-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+}
+
+/* 图标徽章沿用 .feature-icon 的焰色渐变，保证与首页/关于页同一套观感 */
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  color: var(--c-accent);
+  background: linear-gradient(135deg, #fbf1ec, #f7e3da);
+}
+
+.social-icon svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.social-name {
+  margin-top: 16px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.social-desc {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-2);
+}
+
+.social-go {
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-accent);
+}
+
+.social-contact .feature-card {
+  display: block;
+  width: 100%;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.social-contact .feature-card p {
+  word-break: break-word;
+}
+
+.social-back {
+  margin-top: 36px;
+  text-align: center;
+}
+
+.social-back a {
+  font-weight: 500;
+  color: var(--c-accent);
+}
+
+@media (max-width: 1023px) {
+  .social-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .social-grid { grid-template-columns: 1fr; }
+  .social-card { padding: 26px 20px 22px; }
+  .social-group + .social-group { margin-top: 40px; }
+}
+
 /* ---------------- 二维码 / 联系 ---------------- */
 
 .qr-grid {

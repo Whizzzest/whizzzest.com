@@ -1,0 +1,110 @@
+<!-- {"title":"关注焰境·万载 — 官方社交媒体与联系方式","description":"焰境·万载官方社媒聚合页：微信公众号、微信视频号、哔哩哔哩、抖音、小红书，以及 X、YouTube、Instagram、Facebook、Discord——一页找齐全部官方账号、二维码与联系方式。","ogImage":"/assets/img/guchen_yanhua.jpeg"} -->
+<!DOCTYPE html>
+<html lang="{{page.htmlLang}}">
+{{> head}}
+<body>
+  {{> header}}
+  <main id="main">
+
+    <section class="hero hero-inner">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="/assets/img/guchen_yanhua.jpeg" alt="" loading="eager" fetchpriority="high">
+      </div>
+      <div class="hero-content">
+        <h1>{{data.hero.title}}</h1>
+        <p class="hero-sub">{{data.hero.subtitle}}</p>
+      </div>
+    </section>
+
+    <!-- 官方渠道卡墙：渠道表 src/data/social-channels.json（双语文案+分组），
+         链接/二维码按 icon 从 site.footer.socials 解析（docs/社媒聚合页方案.md §4）。
+         外链型整卡可点；二维码型点击开全站灯箱（data-qr，main.js 已通管）。 -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>{{data.sections.channelsTitle}}</h2>
+          <p>{{data.sections.channelsDesc}}</p>
+        </div>
+        {{#each data.socialGroups as g}}
+        <div class="social-group">
+          <h3 class="social-group-title reveal">{{g.label}}</h3>
+          <div class="social-grid reveal">
+            {{#each g.items as c}}
+            {{#if c.isLink}}
+            <a class="social-card" href="{{c.href}}" target="_blank" rel="noopener">
+              <span class="social-icon" aria-hidden="true">{{{c.svg}}}</span>
+              <span class="social-name">{{c.name}}</span>
+              <span class="social-desc">{{c.desc}}</span>
+              <span class="social-go">{{data.sections.ctaOpen}}</span>
+            </a>
+            {{/if}}
+            {{#if c.isQr}}
+            <button class="social-card" type="button" data-qr="{{c.qr}}" data-cap="{{c.cap}}" aria-label="{{c.name}}{{t.footer.qrAria}}">
+              <span class="social-icon" aria-hidden="true">{{{c.svg}}}</span>
+              <span class="social-name">{{c.name}}</span>
+              <span class="social-desc">{{c.desc}}</span>
+              <span class="social-go">{{data.sections.ctaQr}}</span>
+            </button>
+            {{/if}}
+            {{/each}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </section>
+
+    <!-- 扫码关注：有二维码的渠道内联铺开（微信类无法外链，扫码即关注；英文站无二维码渠道时本段自动不渲染） -->
+    {{#if data.qrChannels}}
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>{{data.sections.qrTitle}}</h2>
+          <p>{{data.sections.qrDesc}}</p>
+        </div>
+        <div class="qr-grid reveal">
+          {{#each data.qrChannels as q}}
+          <figure class="qr-card">
+            <img src="{{q.qr}}" alt="{{q.cap}}" loading="lazy" decoding="async">
+            <p>{{q.cap}}</p>
+          </figure>
+          {{/each}}
+        </div>
+      </div>
+    </section>
+    {{/if}}
+
+    <!-- 联系与分享：邮箱 / 企业微信在线咨询（英文站无此项则自动不渲染）/ 分享本站二维码组（复用分享灯箱） -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>{{data.sections.contactTitle}}</h2>
+        </div>
+        <div class="grid grid-3 social-contact reveal">
+          <a class="feature-card" href="mailto:{{site.email}}">
+            <h3>{{data.sections.emailLabel}}</h3>
+            <p>{{site.email}}</p>
+            <span class="card-go">{{data.sections.ctaOpen}}</span>
+          </a>
+          {{#if site.footer.onlineSupport.href}}
+          <a class="feature-card" href="{{site.footer.onlineSupport.href}}" target="_blank" rel="noopener">
+            <h3>{{data.sections.supportLabel}}</h3>
+            <p>{{data.sections.supportDesc}}</p>
+            <span class="card-go">{{data.sections.ctaOpen}}</span>
+          </a>
+          {{/if}}
+          {{#if data.share}}
+          <button class="feature-card" type="button" data-qr-list="{{data.share.qrListJson}}" data-cap="{{data.share.cap}}">
+            <h3>{{data.sections.shareLabel}}</h3>
+            <p>{{data.sections.shareDesc}}</p>
+            <span class="card-go">{{data.sections.ctaShare}}</span>
+          </button>
+          {{/if}}
+        </div>
+        <p class="social-back reveal"><a href="{{site.footer.aboutHref}}">{{t.footer.aboutLink}}</a></p>
+      </div>
+    </section>
+
+  </main>
+  {{> footer}}
+</body>
+</html>

@@ -25,6 +25,9 @@
       {{#if s.isShare}}<button type="button" data-qr-list="{{s.qrListJson}}" data-cap="{{s.cap}}" aria-label="{{s.label}}{{t.footer.qrAria}}" title="{{s.label}}">{{{s.svg}}}</button>{{/if}}
       {{/each}}
     </div>
+    <!-- 社媒聚合页入口（docs/社媒聚合页方案.md §5）：社交图标行最右端「查看更多 ›／See more ›」；
+         href 与文案 per-locale 落数据（site.footer.socialMoreHref / t.footer.socialMore） -->
+    <a class="footer-social-more" href="{{site.footer.socialMoreHref}}">{{t.footer.socialMore}}</a>
   </div>
 </footer>
 <!-- 二维码灯箱：全站页脚常驻，页脚微信图标与关于页 [data-qr] 元素共用 -->

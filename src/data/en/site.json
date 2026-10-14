@@ -125,7 +125,8 @@
         "href": "https://www.youtube.com/channel/UC_MydWjbYuZ5Z9Aa4EltDWw"
       }
     ],
-    "aboutHref": "/en/about/"
+    "aboutHref": "/en/about/",
+    "socialMoreHref": "/en/social/"
   },
   "manifest": {
     "name": "Whizzzest",

@@ -1,0 +1,23 @@
+{
+  "_note": "社媒聚合页 /social/ 文案。渠道图标的 SVG 与链接/二维码不在本文件：渠道表见 src/data/social-channels.json，链接源见 src/data/site.json → footer.socials，构建期由 build.js resolveSocialChannels 解析（docs/社媒聚合页方案.md §4）。",
+  "socialChannels": true,
+  "hero": {
+    "title": "关注焰境·万载",
+    "subtitle": "官方账号都在这里：每周六晚八点的「焰火之吻」、非遗手艺、古城日常与万载六大碗。"
+  },
+  "sections": {
+    "channelsTitle": "官方账号",
+    "channelsDesc": "国内与海外平台一并列出，找到你常用的那一个。",
+    "qrTitle": "扫码关注",
+    "qrDesc": "微信公众号与视频号：扫码或长按识别二维码即可关注。",
+    "contactTitle": "联系与分享",
+    "emailLabel": "电子邮箱",
+    "supportLabel": "在线咨询",
+    "supportDesc": "企业微信客服，收到消息会尽快回复。",
+    "ctaOpen": "前往 ↗",
+    "ctaQr": "扫码关注",
+    "ctaShare": "打开分享二维码",
+    "shareLabel": "分享本站",
+    "shareDesc": "把焰境·万载分享给朋友——微信内可长按识别，或下载二维码。"
+  }
+}

@@ -133,6 +133,7 @@
       "赣ICP备2026003337号-1"
     ],
     "beianHref": "https://beian.miit.gov.cn/",
-    "aboutHref": "/about/"
+    "aboutHref": "/about/",
+    "socialMoreHref": "/social/"
   }
 }

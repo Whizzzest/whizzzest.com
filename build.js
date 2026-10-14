@@ -63,6 +63,12 @@ const ASSET_PREFIXES = ['/assets/', '/icons/', '/favicon.svg', '/favicon.ico', '
 // 新平台 = JSON 加一项 + 数据文件里引用 icon 名。
 const SOCIAL_ICONS = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "social-icons.json"), "utf8"));
 
+// 社媒聚合页渠道表（docs/社媒聚合页方案.md §4）：只写双语文案 + 分组，href/qr/qrList 由
+// resolveSocialChannels 按 icon 从两个 locale 的 site.footer.socials 并集解析（链接单一事实源）。
+// SOCIALS_BY_ICON[locale] 在 main() 里随 site 数据填充（本语言条目优先，缺的用另一语言兜底）。
+const SOCIAL_CHANNELS = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "social-channels.json"), "utf8"));
+let SOCIALS_BY_ICON = {};
+
 /* ---------------- 小工具 ---------------- */
 
 const read = (p) => fs.readFileSync(p, 'utf8');
@@ -329,6 +335,52 @@ function minifyHtml(html) {
 
 /* ---------------- 页面处理 ---------------- */
 
+/**
+ * 社媒聚合页渠道解析（docs/社媒聚合页方案.md §4）：页面数据声明 "socialChannels": true 时调用。
+ *  - 图标取 SOCIAL_ICONS；href / qr / qrList 按 icon 从「本语言优先、缺则另一语言兜底」的索引解析
+ *    → 链接只在 site.footer.socials 维护一处，中英两页都能列全平台；
+ *  - 名称/说明/二维码题注取渠道表当前语言文案（缺该语言回退 zh）；
+ *  - 模板条件只支持单路径真值 → 分组数组与扫码渠道数组在构建期算好。
+ * 校验口径同 site.footer.socials：未知 icon、两侧都查不到链接 → 构建失败。
+ */
+function resolveSocialChannels(data, locCode) {
+  const byIcon = SOCIALS_BY_ICON[locCode] || new Map();
+  const text = (entry, key) => (entry[locCode] || entry[DEFAULT_LOCALE.code] || {})[key] || '';
+  const items = (SOCIAL_CHANNELS.channels || []).map((c) => {
+    if (!SOCIAL_ICONS[c.icon]) throw new Error(`social-channels.json 未知图标: ${c.icon}`);
+    const src = byIcon.get(c.icon);
+    if (!src) {
+      throw new Error(`social-channels.json 渠道 ${c.icon} 在两个 locale 的 site.footer.socials 中都找不到（需 href / qr / qrList 之一）`);
+    }
+    return {
+      icon: c.icon,
+      group: c.group,
+      name: text(c, 'name') || src.label,
+      desc: text(c, 'desc'),
+      cap: text(c, 'cap') || src.cap || '',
+      svg: SOCIAL_ICONS[c.icon],
+      href: src.href,
+      qr: src.qr,
+      qrListJson: src.qrListJson,
+      isLink: src.isLink,
+      isQr: src.isQr,
+    };
+  });
+  const groups = (SOCIAL_CHANNELS.groups || []).filter((g) => items.some((i) => i.group === g.key));
+  const order = (SOCIAL_CHANNELS.channelOrder || {})[locCode] || groups.map((g) => g.key);
+  data.socialGroups = groups
+    .slice()
+    .sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key))
+    .map((g) => ({
+      key: g.key,
+      label: g[locCode] || g[DEFAULT_LOCALE.code] || g.key,
+      items: items.filter((i) => i.group === g.key),
+    }));
+  data.qrChannels = items.filter((i) => i.isQr);
+  data.share = byIcon.get('share-site') || null;
+  return data;
+}
+
 /** 页面首部 JSON 元信息注释：<!-- {"title":"…","description":"…"} --> */
 function parseMeta(html) {
   const m = html.match(/^\s*<!--\s*(\{[\s\S]*?\})\s*-->/);
@@ -351,6 +403,7 @@ function buildPage(loc, dirName, site, strings, images, alternates, ogAlternates
   const locDataFile = localeDataPath(loc, `${dirName}.json`);
   if (!isDefault && !exists(locDataFile)) return null;
   const data = exists(locDataFile) ? JSON.parse(read(locDataFile)) : {};
+  if (data.socialChannels) resolveSocialChannels(data, loc.code);
 
   let meta = zhMeta;
   if (!isDefault) {
@@ -592,6 +645,19 @@ async function main() {
     const zhStrings = JSON.parse(read(localeDataPath(DEFAULT_LOCALE, 'strings.json')));
     stringsByLocale[loc.code] =
       loc.code === DEFAULT_LOCALE.code ? zhStrings : deepMerge(zhStrings, JSON.parse(read(localeDataPath(loc, 'strings.json'))));
+  }
+
+  // 社媒渠道 icon → 条目索引：本语言条目优先，缺失的用另一语言兜底（/social/ 与 /en/social/
+  // 都要列全平台——双语页面共用一份渠道表，故需跨 locale 解析）。键=icon，值=已预计算 svg/三态的 socials 条目。
+  SOCIALS_BY_ICON = {};
+  for (const loc of LOCALES) {
+    const map = new Map();
+    for (const other of LOCALES) {
+      if (other.code === loc.code) continue;
+      for (const s of sites[other.code].footer?.socials || []) map.set(s.icon, s);
+    }
+    for (const s of sites[loc.code].footer?.socials || []) map.set(s.icon, s);
+    SOCIALS_BY_ICON[loc.code] = map;
   }
 
   const images = await scanImages();
