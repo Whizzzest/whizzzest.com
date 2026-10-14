@@ -68,6 +68,9 @@ const SOCIAL_ICONS = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "social-icon
 // SOCIALS_BY_ICON[locale] 在 main() 里随 site 数据填充（本语言条目优先，缺的用另一语言兜底）。
 const SOCIAL_CHANNELS = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "social-channels.json"), "utf8"));
 let SOCIALS_BY_ICON = {};
+// 企业微信在线咨询（页脚 site.footer.onlineSupport，仅 zh 站配置）：社交聚合页两侧都要有这张卡，
+// 故 href 跨 locale 取其一，见 resolveSocialChannels。
+let ONLINE_SUPPORT = null;
 
 /* ---------------- 小工具 ---------------- */
 
@@ -340,7 +343,10 @@ function minifyHtml(html) {
  *  - 图标取 SOCIAL_ICONS；href / qr / qrList 按 icon 从「本语言优先、缺则另一语言兜底」的索引解析
  *    → 链接只在 site.footer.socials 维护一处，中英两页都能列全平台；
  *  - 名称/说明/二维码题注取渠道表当前语言文案（缺该语言回退 zh）；
- *  - 模板条件只支持单路径真值 → 分组数组与扫码渠道数组在构建期算好。
+ *  - 模板条件只支持单路径真值 → 分组数组在构建期算好；
+ *  - 页面声明 "contactSupport": true 时解析 data.supportHref：企业微信在线咨询的 href 只在
+ *    zh 站页脚配置（site.footer.onlineSupport），英文站页脚没有，但英文聚合页要与中文页对称
+ *    → href 跨 locale 取其一带上，label/desc 由页面数据按语言给。
  * 校验口径同 site.footer.socials：未知 icon、两侧都查不到链接 → 构建失败。
  */
 function resolveSocialChannels(data, locCode) {
@@ -376,8 +382,13 @@ function resolveSocialChannels(data, locCode) {
       label: g[locCode] || g[DEFAULT_LOCALE.code] || g.key,
       items: items.filter((i) => i.group === g.key),
     }));
-  data.qrChannels = items.filter((i) => i.isQr);
   data.share = byIcon.get('share-site') || null;
+  if (data.contactSupport) {
+    if (!ONLINE_SUPPORT) {
+      throw new Error('页面声明 contactSupport，但没有任何 locale 的 site.footer.onlineSupport.href 可用');
+    }
+    data.supportHref = ONLINE_SUPPORT.href;
+  }
   return data;
 }
 
@@ -659,6 +670,7 @@ async function main() {
     for (const s of sites[loc.code].footer?.socials || []) map.set(s.icon, s);
     SOCIALS_BY_ICON[loc.code] = map;
   }
+  ONLINE_SUPPORT = LOCALES.map((l) => sites[l.code].footer?.onlineSupport).find((s) => s && s.href) || null;
 
   const images = await scanImages();
 

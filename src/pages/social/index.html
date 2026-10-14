@@ -6,14 +6,10 @@
   {{> header}}
   <main id="main">
 
-    <section class="hero hero-inner">
-      <div class="hero-bg" aria-hidden="true">
-        <img src="/assets/img/guchen_yanhua.jpeg" alt="" loading="eager" fetchpriority="high">
-      </div>
-      <div class="hero-content">
-        <h1>{{data.hero.title}}</h1>
-        <p class="hero-sub">{{data.hero.subtitle}}</p>
-      </div>
+    <!-- 简约文字头（站内 .hero-flat 浅色内页头，不用大图；social-hero 收紧与下方区块的留白） -->
+    <section class="hero-flat social-hero">
+      <h1>{{data.hero.title}}</h1>
+      <p class="hero-sub">{{data.hero.subtitle}}</p>
     </section>
 
     <!-- 官方渠道卡墙：渠道表 src/data/social-channels.json（双语文案+分组），
@@ -53,27 +49,8 @@
       </div>
     </section>
 
-    <!-- 扫码关注：有二维码的渠道内联铺开（微信类无法外链，扫码即关注；英文站无二维码渠道时本段自动不渲染） -->
-    {{#if data.qrChannels}}
-    <section class="section section-alt">
-      <div class="container">
-        <div class="section-head reveal">
-          <h2>{{data.sections.qrTitle}}</h2>
-          <p>{{data.sections.qrDesc}}</p>
-        </div>
-        <div class="qr-grid reveal">
-          {{#each data.qrChannels as q}}
-          <figure class="qr-card">
-            <img src="{{q.qr}}" alt="{{q.cap}}" loading="lazy" decoding="async">
-            <p>{{q.cap}}</p>
-          </figure>
-          {{/each}}
-        </div>
-      </div>
-    </section>
-    {{/if}}
-
-    <!-- 联系与分享：邮箱 / 企业微信在线咨询（英文站无此项则自动不渲染）/ 分享本站二维码组（复用分享灯箱） -->
+    <!-- 简明联系与分享：邮箱 / 企业微信在线咨询 / 分享本站二维码组（三格中英一致，业主拍板英文页同样保留企业咨询）；
+         前两项 href 落数据（企业咨询 href 由 build.js 跨 locale 解析 site.footer.onlineSupport），分享项复用分享灯箱 -->
     <section class="section">
       <div class="container">
         <div class="section-head reveal">
@@ -85,13 +62,11 @@
             <p>{{site.email}}</p>
             <span class="card-go">{{data.sections.ctaOpen}}</span>
           </a>
-          {{#if site.footer.onlineSupport.href}}
-          <a class="feature-card" href="{{site.footer.onlineSupport.href}}" target="_blank" rel="noopener">
+          <a class="feature-card" href="{{data.supportHref}}" target="_blank" rel="noopener">
             <h3>{{data.sections.supportLabel}}</h3>
             <p>{{data.sections.supportDesc}}</p>
             <span class="card-go">{{data.sections.ctaOpen}}</span>
           </a>
-          {{/if}}
           {{#if data.share}}
           <button class="feature-card" type="button" data-qr-list="{{data.share.qrListJson}}" data-cap="{{data.share.cap}}">
             <h3>{{data.sections.shareLabel}}</h3>

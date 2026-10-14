@@ -886,15 +886,26 @@ a.feature-card:hover {
   border-color: var(--c-accent);
 }
 
-/* ---------------- 社媒聚合页（/social/ · /en/social/，docs/社媒聚合页方案.md §3） ---------------- */
+/* ---------------- 社媒聚合页（/social/ · /en/social/，docs/社媒聚合页方案.md §3） ----------------
+   2026-10-14 业主反馈「简约一点、卡片小一点」：无大图 hero（用 .hero-flat）、无内联二维码区，
+   卡片尺寸整体收一档（图标 44/字 16/描述 13/内边距 22·18·18、栅格 980px 居中）。 */
+
+/* 无大图的简约页头：收紧与首个区块之间的留白（.hero-flat 默认 108/88 + .section 96 太空） */
+.social-hero.hero-flat {
+  padding: 92px 22px 0;
+}
+
+.social-hero + .section {
+  padding-top: 52px;
+}
 
 .social-group + .social-group {
-  margin-top: 56px;
+  margin-top: 44px;
 }
 
 .social-group-title {
-  margin-bottom: 20px;
-  font-size: 15px;
+  margin-bottom: 16px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--c-text-3);
@@ -904,7 +915,9 @@ a.feature-card:hover {
 .social-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 16px;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
 /* 卡片对 <a> 与 <button> 同构：重置浏览器默认按钮外观，视觉一致 */
@@ -912,9 +925,9 @@ a.feature-card:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 22px 26px;
+  padding: 22px 18px 18px;
   border: 0;
-  border-radius: var(--radius);
+  border-radius: 16px;
   background: var(--c-bg-alt);
   font: inherit;
   color: inherit;
@@ -924,8 +937,8 @@ a.feature-card:hover {
 }
 
 .social-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
 }
 
 /* 图标徽章沿用 .feature-icon 的焰色渐变，保证与首页/关于页同一套观感 */
@@ -933,36 +946,36 @@ a.feature-card:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   color: var(--c-accent);
   background: linear-gradient(135deg, #fbf1ec, #f7e3da);
 }
 
 .social-icon svg {
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
   display: block;
 }
 
 .social-name {
-  margin-top: 16px;
-  font-size: 19px;
+  margin-top: 12px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 .social-desc {
-  margin-top: 8px;
-  font-size: 14px;
-  line-height: 1.55;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
   color: var(--c-text-2);
 }
 
 .social-go {
-  margin-top: 14px;
-  font-size: 14px;
+  margin-top: 10px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--c-accent);
 }
@@ -997,8 +1010,8 @@ a.feature-card:hover {
 
 @media (max-width: 700px) {
   .social-grid { grid-template-columns: 1fr; }
-  .social-card { padding: 26px 20px 22px; }
-  .social-group + .social-group { margin-top: 40px; }
+  .social-card { padding: 20px 18px 16px; }
+  .social-group + .social-group { margin-top: 32px; }
 }
 
 /* ---------------- 二维码 / 联系 ---------------- */
