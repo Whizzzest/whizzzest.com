@@ -125,14 +125,20 @@ jobs:
 
   # 企业仓库镜像（docs/仓库同步方案.md）：needs=deploy → **部署成功后才推**，企业仓库上看到的就是
   # 已上线的那版，不会再出现「拿到企业仓库代码却比线上新」的错觉。
-  # 守卫：只在权威仓库 pan-nie/whizzzest.com 执行——同一份文件镜像到企业仓库后也会跑，靠本行跳过，
-  # 防回环（企业仓库 Actions 亦已关闭，见方案 §5）。凭据=企业仓库专用 Deploy Key（write 权限），
-  # 私钥存 pan-nie 侧 secret ORG_MIRROR_SSH_KEY；host key 用 api.github.com/meta 固定值而非
-  # ssh-keyscan（避免中间人面）。只推 HEAD:main，**不用 `--mirror`**（避免误删企业仓库上的分支/标签）。
+  # 守卫①：只在权威仓库 pan-nie/whizzzest.com 执行——同一份文件镜像到企业仓库后也会跑，靠本行跳过，
+  #   防回环（企业仓库 Actions 亦已关闭，见方案 §5）。
+  # 守卫②：`vars.ORG_MIRROR_ENABLED == 'true'` 总闸，默认关。原因（2026-10-14 实测，方案 §8）：
+  #   Deploy Key 被 GitHub 禁止推送 `.github/workflows/**` 的改动（remote rejected：refusing to allow
+  #   an OAuth App to create or update workflow without `workflow` scope）——只要提交里动了 workflow
+  #   文件，镜像必失败。凭据换成带 Workflows 写权限的 token 后，`gh variable set ORG_MIRROR_ENABLED
+  #   --body true` 一处开闸即可。
+  # 凭据（启用时）：企业仓库专用 Deploy Key 私钥存 pan-nie 侧 secret ORG_MIRROR_SSH_KEY；
+  #   host key 用 api.github.com/meta 固定值而非 ssh-keyscan（避免中间人面）。
+  #   只推 HEAD:main，**不用 `--mirror`**（避免误删企业仓库上的分支/标签）。
   mirror:
     name: Mirror to Whizzzest/whizzzest.com
     needs: deploy
-    if: github.repository == 'pan-nie/whizzzest.com' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.repository == 'pan-nie/whizzzest.com' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.ORG_MIRROR_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
