@@ -127,12 +127,12 @@ jobs:
   # 已上线的那版，不会再出现「拿到企业仓库代码却比线上新」的错觉。
   # 守卫①：只在权威仓库 pan-nie/whizzzest.com 执行——同一份文件镜像到企业仓库后也会跑，靠本行跳过，
   #   防回环（企业仓库 Actions 亦已关闭，见方案 §5）。
-  # 守卫②：`vars.ORG_MIRROR_ENABLED == 'true'` 总闸，默认关，凭据就绪后 `gh variable set
-  #   ORG_MIRROR_ENABLED --body true` 一处开闸。
-  # 凭据（业主拍板方案 A）：fine-grained PAT，Resource owner=Whizzzest、仅该仓库、
-  #   `Contents: Read and write` + **`Workflows: Read and write`**（Workflows 这一项是必需的——
-  #   2026-10-14 实测：Deploy Key 被 GitHub 拒绝推送 `.github/workflows/**`，报错
-  #   "refusing to allow an OAuth App to create or update workflow … without `workflow` scope"，
+  # 守卫②：`vars.ORG_MIRROR_ENABLED == 'true'` 总闸 —— 2026-10-14 验证通过后已置 true；
+  #   置 false（或删除该 variable）即停用镜像（job 显示 skipped 而非红），可作 kill switch。
+  # 凭据（业主拍板方案 A，2026-10-14 已验证）：fine-grained PAT，Resource owner=Whizzzest、
+  #   仅授权 Whizzzest/whizzzest.com、`Contents: Read and write` + **`Workflows: Read and write`**
+  #   （Workflows 这一项是必需的——同日实测：Deploy Key 被 GitHub 拒绝推送 `.github/workflows/**`，
+  #   报错 "refusing to allow an OAuth App to create or update workflow … without `workflow` scope"，
   #   见方案 §8）→ token 存 pan-nie 侧 secret `ORG_MIRROR_TOKEN`，走 HTTPS 推送。
   #   只推 HEAD:main，**不用 `--mirror`**（避免误删企业仓库上的分支/标签）。
   mirror:
