@@ -912,11 +912,13 @@ a.feature-card:hover {
   text-align: center;
 }
 
+/* 渠道从 10 个增到 17 个后 3 列会出现「每群末尾孤卡」（7=3+3+1 / 10=3+3+3+1），
+   故桌面改 4 列：7=4+3、10=4+4+2，卡片同时更小一档 */
 .social-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  max-width: 980px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 

@@ -340,14 +340,15 @@ function minifyHtml(html) {
 
 /**
  * 社媒聚合页渠道解析（docs/社媒聚合页方案.md §4）：页面数据声明 "socialChannels": true 时调用。
- *  - 图标取 SOCIAL_ICONS；href / qr / qrList 按 icon 从「本语言优先、缺则另一语言兜底」的索引解析
- *    → 链接只在 site.footer.socials 维护一处，中英两页都能列全平台；
+ *  - 图标取 SOCIAL_ICONS；链接解析：渠道条目自带 url 时以 url 为准（用于只上聚合页、不进页脚
+ *    那一行的渠道），否则按 icon 从「本语言优先、缺则另一语言兜底」的 site.footer.socials 索引
+ *    取 href / qr / qrList → 页脚已列的渠道链接只在 site.footer.socials 维护一处；
  *  - 名称/说明/二维码题注取渠道表当前语言文案（缺该语言回退 zh）；
  *  - 模板条件只支持单路径真值 → 分组数组在构建期算好；
  *  - 页面声明 "contactSupport": true 时解析 data.supportHref：企业微信在线咨询的 href 只在
  *    zh 站页脚配置（site.footer.onlineSupport），英文站页脚没有，但英文聚合页要与中文页对称
  *    → href 跨 locale 取其一带上，label/desc 由页面数据按语言给。
- * 校验口径同 site.footer.socials：未知 icon、两侧都查不到链接 → 构建失败。
+ * 校验口径同 site.footer.socials：未知 icon、既无自带 url 又查不到页脚条目 → 构建失败。
  */
 function resolveSocialChannels(data, locCode) {
   const byIcon = SOCIALS_BY_ICON[locCode] || new Map();
@@ -355,21 +356,25 @@ function resolveSocialChannels(data, locCode) {
   const items = (SOCIAL_CHANNELS.channels || []).map((c) => {
     if (!SOCIAL_ICONS[c.icon]) throw new Error(`social-channels.json 未知图标: ${c.icon}`);
     const src = byIcon.get(c.icon);
-    if (!src) {
-      throw new Error(`social-channels.json 渠道 ${c.icon} 在两个 locale 的 site.footer.socials 中都找不到（需 href / qr / qrList 之一）`);
+    const href = c.url || src?.href;
+    const qr = href ? undefined : c.qr || src?.qr;
+    const qrList = href || qr ? undefined : c.qrList || src?.qrList;
+    const isShare = Array.isArray(qrList) && qrList.length > 0;
+    if (!href && !qr && !isShare) {
+      throw new Error(`social-channels.json 渠道 ${c.icon} 既没有自带 url，也未在两个 locale 的 site.footer.socials 找到（需 href / qr / qrList 之一）`);
     }
     return {
       icon: c.icon,
       group: c.group,
-      name: text(c, 'name') || src.label,
+      name: text(c, 'name') || src?.label || c.icon,
       desc: text(c, 'desc'),
-      cap: text(c, 'cap') || src.cap || '',
+      cap: text(c, 'cap') || src?.cap || '',
       svg: SOCIAL_ICONS[c.icon],
-      href: src.href,
-      qr: src.qr,
-      qrListJson: src.qrListJson,
-      isLink: src.isLink,
-      isQr: src.isQr,
+      href,
+      qr,
+      qrListJson: isShare ? JSON.stringify(qrList.map((q) => (typeof q === 'string' ? { src: q } : { ...q }))) : undefined,
+      isLink: Boolean(href),
+      isQr: !href && Boolean(qr),
     };
   });
   const groups = (SOCIAL_CHANNELS.groups || []).filter((g) => items.some((i) => i.group === g.key));

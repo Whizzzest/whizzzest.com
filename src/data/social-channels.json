@@ -1,5 +1,5 @@
 {
-  "_note": "社媒聚合页（/social/ 与 /en/social/）渠道表 —— 单一事实源：本表只写双语文案与分组，href/qr/qrList 一律按 icon 从两个 locale 的 src/data[/en]/site.json → footer.socials 并集解析（构建期，见 build.js resolveSocialChannels 与 docs/社媒聚合页方案.md）。加平台只改本表 + 对应 locale 的 site.json socials；中英两页都列全平台，分组顺序按当前语言母语平台优先。",
+  "_note": "社媒聚合页（/social/ 与 /en/social/）渠道表 —— 单一事实源：本表写双语文案与分组；href/qr/qrList 默认按 icon 从两个 locale 的 src/data[/en]/site.json → footer.socials 并集解析，条目自带 url 时以 url 为准（用于只上聚合页、进不了页脚那一行的渠道，如 GitHub/知乎/CSDN/LinkedIn/Reddit/TikTok/Telegram）；三者都没有则构建失败。构建期解析见 build.js resolveSocialChannels 与 docs/社媒聚合页方案.md。中英两页都列全平台，分组顺序按当前语言母语平台优先。",
   "groups": [
     { "key": "cn", "zh": "国内平台", "en": "China platforms" },
     { "key": "global", "zh": "海外平台", "en": "Global platforms" }
@@ -74,6 +74,32 @@
       }
     },
     {
+      "icon": "csdn",
+      "group": "cn",
+      "url": "https://blog.csdn.net/nathanpenny",
+      "zh": {
+        "name": "CSDN",
+        "desc": "技术文章与教程：这座站是怎么搭起来的。"
+      },
+      "en": {
+        "name": "CSDN",
+        "desc": "Tech articles and tutorials (Chinese)."
+      }
+    },
+    {
+      "icon": "zhihu",
+      "group": "cn",
+      "url": "https://www.zhihu.com/people/nathan-penny",
+      "zh": {
+        "name": "知乎",
+        "desc": "问答与长文：文旅、烟花与工程实践。"
+      },
+      "en": {
+        "name": "Zhihu",
+        "desc": "Questions, answers and long-form writing (Chinese)."
+      }
+    },
+    {
       "icon": "x",
       "group": "global",
       "zh": {
@@ -131,6 +157,71 @@
       "en": {
         "name": "Discord",
         "desc": "Community chat and build-in-public updates."
+      }
+    },
+    {
+      "icon": "github",
+      "group": "global",
+      "url": "https://github.com/pan-nie",
+      "zh": {
+        "name": "GitHub",
+        "desc": "开源代码：本站与相关项目的仓库。"
+      },
+      "en": {
+        "name": "GitHub",
+        "desc": "Open-source code — this site and related projects."
+      }
+    },
+    {
+      "icon": "tiktok",
+      "group": "global",
+      "url": "https://www.tiktok.com/@nathanpenny520",
+      "zh": {
+        "name": "TikTok",
+        "desc": "面向海外的短视频：烟花与古城片段。"
+      },
+      "en": {
+        "name": "TikTok",
+        "desc": "Clips and highlights for an international audience."
+      }
+    },
+    {
+      "icon": "reddit",
+      "group": "global",
+      "url": "https://www.reddit.com/user/NathanPenny/",
+      "zh": {
+        "name": "Reddit",
+        "desc": "英文社区里的帖子与讨论。"
+      },
+      "en": {
+        "name": "Reddit",
+        "desc": "Threads, memes and discussions."
+      }
+    },
+    {
+      "icon": "linkedin",
+      "group": "global",
+      "url": "https://www.linkedin.com/in/nathan-penny-1092a63b4/",
+      "zh": {
+        "name": "LinkedIn",
+        "desc": "作者职业主页：项目背景与履历。"
+      },
+      "en": {
+        "name": "LinkedIn",
+        "desc": "Professional profile and CV."
+      }
+    },
+    {
+      "icon": "telegram",
+      "group": "global",
+      "url": "https://t.me/+GQ3JAMqLBtc3Zjg9",
+      "zh": {
+        "name": "Telegram",
+        "desc": "公告与更新频道（邀请链接）。"
+      },
+      "en": {
+        "name": "Telegram",
+        "desc": "Announcements and updates channel (invite link)."
       }
     }
   ]
