@@ -123,6 +123,39 @@ jobs:
           wranglerVersion: "4.129.0"
           workingDirectory: im
 
+  # 企业仓库镜像（docs/仓库同步方案.md）：needs=deploy → **部署成功后才推**，企业仓库上看到的就是
+  # 已上线的那版，不会再出现「拿到企业仓库代码却比线上新」的错觉。
+  # 守卫：只在权威仓库 pan-nie/whizzzest.com 执行——同一份文件镜像到企业仓库后也会跑，靠本行跳过，
+  # 防回环（企业仓库 Actions 亦已关闭，见方案 §5）。凭据=企业仓库专用 Deploy Key（write 权限），
+  # 私钥存 pan-nie 侧 secret ORG_MIRROR_SSH_KEY；host key 用 api.github.com/meta 固定值而非
+  # ssh-keyscan（避免中间人面）。只推 HEAD:main，**不用 `--mirror`**（避免误删企业仓库上的分支/标签）。
+  mirror:
+    name: Mirror to Whizzzest/whizzzest.com
+    needs: deploy
+    if: github.repository == 'pan-nie/whizzzest.com' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 浅克隆推不动（shallow update not allowed），镜像必须是完整历史
+
+      - name: Push main to the org mirror
+        env:
+          MIRROR_SSH_KEY: ${{ secrets.ORG_MIRROR_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MIRROR_SSH_KEY}" ]; then
+            echo "::error::ORG_MIRROR_SSH_KEY 未配置，镜像未执行（见 docs/仓库同步方案.md §5）"
+            exit 1
+          fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$MIRROR_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          git remote add org git@github.com:Whizzzest/whizzzest.com.git
+          git push org HEAD:refs/heads/main
+
 # 注：部署后冒烟检查已移除（2026-09-08）——站点边缘机器人防护会质询数据中心 IP
 # 的非浏览器请求（403 + cf-mitigated: challenge），CI 无法穿透。
 # scripts/smoke.sh 保留为本地手动检查工具：SMOKE_FINGERPRINT=false bash scripts/smoke.sh
